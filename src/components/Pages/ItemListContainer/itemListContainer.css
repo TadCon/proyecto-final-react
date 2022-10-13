@@ -1,0 +1,11 @@
+.txt {
+  text-decoration: none;
+  color: black;
+  margin-left: 1em;
+}
+
+.txt:hover {
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out;
+  color: rgb(121, 118, 118);
+}

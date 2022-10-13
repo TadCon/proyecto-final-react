@@ -1,0 +1,10 @@
+.item {
+  text-decoration: none;
+  color: white;
+}
+
+.item:hover {
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out;
+  color: rgb(179, 176, 176);
+}
