@@ -1,65 +1,94 @@
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { gFetch } from "../../../helpers/gFetch";
-import Titulo from "../../Titulo/Titulo";
-import "./itemListContainer.css"
+import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 
-/* 
-Descripción:
-Lista de todos los items
-*/
+import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore'
 
-const ItemListContainer = () => {
-  const [productos, setProductos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { idCategoria } = useParams();
+import ItemList from "../../ItemList/ItemList"
+import Titulo from "../../Titulo/Titulo"
 
-  useEffect(() => {
-    if (idCategoria) {
-      gFetch()
-        .then((resSgte) =>
-          setProductos(
-            resSgte.filter((producto) => producto.categoria === idCategoria)
-          )
-        )
-        .catch((err) => console.log(err))
-        .finally(() => setLoading(false));
-    } else {
-      gFetch()
-        .then((resSgte) => setProductos(resSgte))
-        .catch((err) => console.log(err))
-        .finally(() => setLoading(false));
-    }
-  }, [idCategoria]);
 
-  return (
-    <div>
-      <Titulo titulo={"Lista de productos"} subtitulo={""} />
 
-      {/* Si está cargando, así lo indica, sino, mapea el array de productos */}
-      {loading ? (
-        <h2>Cargando...</h2>
-      ) : (
-        productos.map((prod) => (
-          <div key={prod.id} style={{ marginLeft: 100 }} className="col-md-6">
-            <Link to={`/detalle/${prod.id}`}>
-              <div className="card mt-5">
-                <p className="card-header txt">
-                  {`${prod.name} - ${prod.categoria}`}
-                </p>
+const Loading = () => {    
+    return <h2>Cargando...</h2>
+} 
+ 
+const ItemListContainer = ( {greeting, titulo} ) => {
+    const [ productos, setProductos ] = useState([])   
+    const [ loading, setLoading ] = useState(true)
+    const { idCategoria } = useParams()
+    
+    /**
+     * If there's an idCategoria, then query the collection with the idCategoria, otherwise query the
+     * collection without the idCategoria.
+     */
+        const traerProductos = () => {
+            const db = getFirestore()
+            const queryCollection = collection(db, 'productos')
+            const queryFiltrada = idCategoria ? query(queryCollection, where('categoria', '==', idCategoria))  
+                : queryCollection               
+            getDocs(queryFiltrada)
+            .then(resp => setProductos(resp.docs.map(prod => ({ id: prod.id, ...prod.data() }) ))) 
+            .catch(err => console.log(err))
+            .finally(() => setLoading(false))
+        }
 
-                <div className="card-body">
-                  <img src={prod.foto} alt="imagen" className="w-25" />
-                </div>
-                 <p className="txt">{prod.price}</p> 
+    useEffect(() => {
+        traerProductos()
+    },[idCategoria])    
 
-              </div>
-            </Link>
-          </div>
-        ))
-      )}
-    </div>
-  );
-};
+    return (
+        <div className="border border-5">
+           <Titulo titulo={'Productos por categoría'} />
+            <p>{greeting}</p>             
 
-export default ItemListContainer;
+            { loading ? 
+                    <Loading />
+                :
+                    <>
+                        <ItemList productos={productos} /> 
+                    </>
+            }
+        </div>
+    )
+}
+
+export default ItemListContainer
+
+
+
+/* APUNTES */
+/*
+//Traer productos filtrados
+useEffect (() => {
+  const db = getFirestore()
+  const queryCollection = collection(db, 'productos')
+
+  const queryFilter = query(queryCollection, where('price', '>', 990))
+
+  getDocs(queryFilter)
+  .then(res => setProductos(res.docs.map(prod => ({ id: prod.id, ...prod.data() }) )))
+  .catch(err => console.log(err))
+  .finally(() => setLoading(false))
+}, [])*/
+
+/*   //Traer todos los productos
+  useEffect (() => {
+    const db = getFirestore()
+    const queryCollection = collection(db, 'productos')
+    getDocs(queryCollection)
+    .then(res => setProductos(res.docs.map(prod => ({ id: prod.id, ...prod.data() }) )))
+    .catch(err => console.log(err))
+    .finally(() => setLoading(false))
+  }, []) */
+
+/*
+//Traer un solo producto
+useEffect (() => {
+  const db = getFirestore()
+  const queryDoc = doc(db, 'items', 'Oo8r7xTHHH1nWUbcU1AP')
+  getDoc(queryDoc)
+  .then(res => setProductos(res.docs.map(prod =>({ id: prod.id, ...prod.data() })) ))
+  .catch(err => console.log(err))
+  .finally(() => setLoading(false))
+})*/
+/* FIN APUNTES */

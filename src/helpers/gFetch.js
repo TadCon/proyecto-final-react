@@ -12,7 +12,7 @@ export const gFetch = () => {
         // acciones que se ejecutan(sync o async)
         setTimeout(()=>{
             res(products)
-        }, 300)
+        }, 100)
     }) 
 } 
 

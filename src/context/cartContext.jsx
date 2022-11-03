@@ -11,20 +11,34 @@ const CartContextProvider = ({ children }) => {
     setCartList([...cartlist, producto]);
   };
 
+  const precioTotal = () => {
+      return cartlist.reduce((acum, prod) => acum + (prod.cantidad * prod.price) , 0)
+  }
+  const cantidadTotal = () => {
+      return cartlist.reduce((acum, prod) => acum += prod.cantidad , 0)// acum = acum + cantidad
+  }
+
+  const removeItem= (id) => {
+      setCartList( cartlist.filter(item => item.id !== id) )
+  }
+
+
   const vaciarCarrito = () => {
     setCartList([]);
   };
 
   return (
-    <CartContext.Provider
-      value={{
+    <CartContext.Provider value={{
         cartlist,
         addItem,
-        vaciarCarrito,
-      }}
-    >
-      {children}
+        precioTotal,
+        cantidadTotal,
+        removeItem,
+        vaciarCarrito
+    }}>
+        {children}
     </CartContext.Provider>
-  );
-};
-export default CartContextProvider;
+
+)}
+export default CartContextProvider
+

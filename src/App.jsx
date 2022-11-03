@@ -6,6 +6,7 @@ import CarritoPage from './components/Pages/CarritoPage/CarritoPage'
 import { NotFound404 } from './components/NotFound404/NotFound404'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CartContextProvider from './context/cartContext'
+import './App.css'
 
 function App() {
     

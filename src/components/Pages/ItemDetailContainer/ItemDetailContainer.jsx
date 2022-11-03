@@ -1,18 +1,26 @@
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { useState } from "react";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
+
 import ItemDetail from "../../ItemDetail/ItemDetail";
 
-/* 
-Descripción:
-Por el momento, este es un componente auxiliar que renderiza el detalle del item.
-*/
-
 const ItemDetailContainer = () => {
-  return (
-    <div className="row">
-      <div className="col-6">
-        <ItemDetail />
-      </div>
-    </div>
-  );
+  const [product, setProduct] = useState({});
+  const [loading, setLoading] = useState(true);
+  const { idProducto } = useParams();
+
+  //traer un producto de firebase
+  useEffect(() => {
+    const db = getFirestore();
+    const queryDoc = doc(db, "productos", idProducto);
+    getDoc(queryDoc)
+      .then((res) => setProduct({ id: res.id, ...res.data() }))
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false));
+  }, []);
+  console.log(product);
+  return loading ? <h1>Cargando...</h1> : <ItemDetail product={product} />;
 };
 
 export default ItemDetailContainer;
