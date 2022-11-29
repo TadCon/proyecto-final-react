@@ -20,8 +20,7 @@ Se trabajó con la Cloud DataBase (no relacional) de Firebase, implementando un 
 Sweetalert2: version 11.6.13
 Es una librería de alertas amigables a la vista, que se ejecutan para confirmar al usuario la realización de ciertas acciones.
 
-React-icons:
-
-Font Awesome:
+React-icons 4.7.1 y Font Awesome: 
+Proveen íconos para estilizar la app.
 
 

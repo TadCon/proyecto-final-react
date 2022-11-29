@@ -72,7 +72,7 @@ const CartContextProvider = ({ children }) => {
         removeItem,
         emptyCart,
         AddedOk,
-        orderOk
+        orderOk,
       }}
     >
       {children}
