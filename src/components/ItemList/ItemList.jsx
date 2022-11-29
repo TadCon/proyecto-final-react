@@ -2,9 +2,10 @@ import { memo } from "react"
 import Item from "../Item/Item"
 
 const ItemList = memo(({productos}) => {
-        console.log('ItemList')
+      //  console.log('ItemList')
         return (
             <div
+            className=""
                 style={{
                     display: 'flex',
                     flexDirection: 'row',

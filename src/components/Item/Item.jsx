@@ -1,22 +1,22 @@
 import { memo } from "react"
 import { Link } from "react-router-dom"
+import './Item.css'
 
 
 const Item = memo(({prod}) => {
-        console.log('Item')
+       // console.log('Item')
 
         return (
             <div            
-                style={{ marginLeft: 100}}
-                className='col-md-3'
+                className='col-3 m-3'
             >    
                 <Link to={`/detalle/${prod.id}`}>
                     <div className="card w-100 mt-5" >
-                        <div className="">
+                        <div className="container">
                             {`${prod.name} - ${prod.categoria}`}
                         </div>
                         <div className="card-body">
-                            <img src={prod.foto} alt='Imagen ilustrativa del producto' className='w-50' />
+                            <img src={prod.foto} alt='Imagen ilustrativa del producto' className='' />
                             <br />
                         </div>
                 

@@ -1,10 +1,19 @@
 .item {
   text-decoration: none;
   color: white;
+  font-weight: 700;
 }
 
 .item:hover {
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out;
   color: rgb(179, 176, 176);
+}
+
+.nowrap{
+  white-space: nowrap;
+}
+
+.cart {
+  font-size: x-large;
 }

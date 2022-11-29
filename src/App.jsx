@@ -27,6 +27,7 @@ function App() {
                         <Route path='*' element={ <Navigate to='/404' />} />
                     </Routes>            
                 </BrowserRouter>
+
             </CartContextProvider>
         </div>
     )

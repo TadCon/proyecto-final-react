@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
+
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore'
 
 import ItemList from "../../ItemList/ItemList"
@@ -12,7 +13,7 @@ const Loading = () => {
     return <h2>Cargando...</h2>
 } 
  
-const ItemListContainer = ( {greeting, titulo} ) => {
+const ItemListContainer = ( {greeting} ) => {
     const [ productos, setProductos ] = useState([])   
     const [ loading, setLoading ] = useState(true)
     const { idCategoria } = useParams()
@@ -37,7 +38,7 @@ const ItemListContainer = ( {greeting, titulo} ) => {
     },[idCategoria])    
 
     return (
-        <div className="border border-5">
+        <div className="container">
            <Titulo titulo={'Productos por categoría'} />
             <p>{greeting}</p>             
 

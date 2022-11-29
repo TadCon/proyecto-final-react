@@ -19,7 +19,7 @@ const ItemDetailContainer = () => {
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   }, []);
-  console.log(product);
+ // console.log(product);
   return loading ? <h1>Cargando...</h1> : <ItemDetail product={product} />;
 };
 

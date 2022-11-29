@@ -14,13 +14,13 @@ const ItemDetail = ({ product }) => {
   const { addItem } = useCartContext();
 
   const onAdd = (cantidad) => {
-    console.log("onAdd", cantidad);
+    //console.log("onAdd", cantidad);
     addItem({ ...product, cantidad });
     setIsCount(false);
   };
 
   return (
-    <div className="row">
+    <div className="row p-5">
       <h1>Detalle del producto</h1>
       <div className="col-6">
         <center>
@@ -28,7 +28,6 @@ const ItemDetail = ({ product }) => {
           <p>{product.name}</p>
           <br />
           <p>{product.price}</p>
-          {/* <button onClick={()=> onAdd()}>Agregar al carrito</button> */}
         </center>
       </div>
 

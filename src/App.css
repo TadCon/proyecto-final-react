@@ -1,4 +1,7 @@
 * {
-    font-family: Muli;
     text-decoration: none !important;
+}
+
+body{
+    background-color: snow;
 }

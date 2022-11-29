@@ -1,88 +1,130 @@
+import {
+  getDocs,
+  query,
+  limit,
+  orderBy,
+  addDoc,
+  collection,
+  getFirestore,
+} from "firebase/firestore";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useCartContext } from "../../../context/cartContext";
+import "./CarritoPage.css";
+import CarritoDetailContainer from "../CarritoDetailContainer/CarritoDetailContainer";
 
-import { addDoc, collection, getFirestore } from 'firebase/firestore'
-import { useState } from 'react'
-import { useCartContext } from '../../../context/cartContext'
+export default function CarritoPage() {
+  const [dataForm, setDataForm] = useState({
+    name: "",
+    phone: "",
+    email: "",
+  });
+  const { cartlist, emptyCart, totalPrice, totalAmount, orderOk } =
+    useCartContext();
+  const [carritoOk, setearCarritoOk] = useState(totalAmount() > 0);
+  const [orderId, setOrderId] = useState();
 
-export default function CarritoPage(){
+  const ocultarBotonesDelCarrito = () => {
+    setearCarritoOk(!carritoOk);
+  };
 
-    const  [dataForm, setDataForm] = useState({
-        name: '',
-        phone: '',
-        email:''
+  const generarOrden = async (e) => {
+    e.preventDefault();
+    const orden = {};
 
-    })
-    const { cartlist, vaciarCarrito, precioTotal } = useCartContext()
+    orden.buyer = {
+      name: dataForm.name,
+      phone: dataForm.phone,
+      email: dataForm.email,
+    };
 
+    orden.items = cartlist.map((prod) => {
+      const { id, name: title, price } = prod;
+      return { id, title, price };
+    });
 
-    const generarOrden = async (e)=>{
-        e.preventDefault()
-        const orden = {}
-        
-        orden.buyer= {
-            name: dataForm.name,
-            phone: dataForm.phone,
-            email: dataForm.email
-        }
+    orden.total = totalPrice();
 
-        orden.items= cartlist.map(prod => {
-            const {id, name: title, price} = prod
-            return {id, title, price}
-        })
+    const db = getFirestore();
+    const orders = collection(db, "orders");
+    addDoc(orders, orden).then(() => emptyCart());
 
-        orden.total= precioTotal()
+    const q = query(collection(db, "orders"), limit(1));
 
-        const db = getFirestore()
-        const orders = collection(db, 'orders')
-        addDoc(orders, orden) // setDoc(orders, obj, id)
-        .then(resp => console.log(resp))
-        .catch(err => console.log(err))
-        .finally(() => vaciarCarrito())
-    }
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      setOrderId(doc.id);
+    });
 
-    const handleInputChange = (e) => {        
-        setDataForm({
-            ...dataForm,
-            [e.target.name]: e.target.value
-        })
-    }
-    console.log(dataForm)
-    return (
-            <div>
+    orderOk();
+  };
 
-                <h1>Carrito</h1>
-            <ul>
-                {cartlist.map(producto => <li> nombre: {producto.name} categoría:{producto.categoria} precio: {producto.price} Cant: {producto.cantidad} </li> )}
-            </ul>
-            <h2>Total: {precioTotal()}</h2>
+  const handleInputChange = (e) => {
+    setDataForm({
+      ...dataForm,
+      [e.target.name]: e.target.value,
+    });
+  };
+  //console.log(dataForm)
+  return (
+    <div className="container my-5">
+      <CarritoDetailContainer />
 
-            {/* fomulario para la orden */}
-            <form onSubmit={generarOrden}>
-                <input 
-                    type="text" 
-                    name="name"
-                    placeholder="Nombre" 
-                    value={dataForm.name}
-                    onChange={handleInputChange}
-                />
-                <input 
-                    type="text"
-                    name="phone" 
-                    value={dataForm.phone}
-                    placeholder="Teléfono" 
-                    onChange={handleInputChange}
-                />
-                <input 
-                    type="text" 
-                    name="email"
-                    value={dataForm.email}
-                    placeholder="Email" 
-                    onChange={handleInputChange}
-                />
-                <button type="submit">Generar orden</button>
-            </form>
-            <button onClick={vaciarCarrito}>Vaciar carrito</button>
-            
-        </div>
-  )
+      {/* fomulario para la orden */}
+      <form id="form-cart" onSubmit={generarOrden}>
+        <input
+          type="text"
+          name="name"
+          placeholder="Nombre"
+          value={dataForm.name}
+          onChange={handleInputChange}
+          required
+        />
+        <input
+          type="text"
+          name="phone"
+          value={dataForm.phone}
+          placeholder="Teléfono"
+          onChange={handleInputChange}
+          required
+        />
+        <input
+          type="text"
+          name="email"
+          value={dataForm.email}
+          placeholder="Email"
+          onChange={handleInputChange}
+          required
+        />
+        {carritoOk && cartlist.length > 0 ? (
+          <div>
+            <button
+              className="btn btn-primary my-3"
+              type="submit"
+              id="submitButton"
+            >
+              Generar orden
+            </button>
+            <button
+              className="btn btn-warning"
+              onClick={() => {
+                emptyCart();
+                ocultarBotonesDelCarrito();
+              }}
+            >
+              Vaciar carrito
+            </button>
+          </div>
+        ) : (
+          <>
+            <h3>El carrito está vacío</h3>
+            <Link to="/">
+              <button className="btn btn-primary my-3">Seguir Comprando</button>
+            </Link>
+          </>
+        )}
+        <h4 className="m-3 text-center">ID de orden: {orderId}</h4>
+      </form>
+    </div>
+  );
 }
-
